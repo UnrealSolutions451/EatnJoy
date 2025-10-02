@@ -117,7 +117,7 @@
         font-size: 15px;
       }
     }
-    /* Nav Bar */
+/* nav bar */
     .admin-nav {
     background: var(--primary, #03045e);
     color: white;
@@ -166,6 +166,7 @@
       border: none;
       color: white;
       cursor: pointer;
+      
     }
     @media (max-width: 768px) {
       .nav-links {
@@ -185,6 +186,7 @@
         display: block;
       }
     }
+
       /* footer */
   .footer {
   background: #f9f9f9;
@@ -214,24 +216,39 @@
     </div>
   </header>
   <nav class="admin-nav">
-  <div class="nav-container">
-    <div class="nav-logo">Eat-N-Joy Cafe</div>
+    <div class="nav-container">
+      <div class="nav-logo">Eat-N-Joy Cafe</div>
 
-    <button class="nav-toggle" id="navToggle">☰</button>
+      <button class="nav-toggle" id="navToggle">☰</button>
 
-    <ul class="nav-links" id="navLinks">
-      <li><a href="admin-dashboard.html">Dashboard</a></li>
-      <li><a href="analytics.html">Analytics</a></li>
-      <li><a href="expense.html">Expenses</a></li>
-      <li><a href="staff-managment.html">Staff</a></li>
-      <li><a href="menumanagment.html">Manage Menu</a></li>
-      <li><a href="index.html">Order panel</a></li>
-    </ul>
-  </div>
-</nav>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="admin-dashboard.html">Dashboard</a></li>
+        <li><a href="analytics.html">Analytics</a></li>
+        <li><a href="expense.html">Expenses</a></li>
+        <li><a href="staff-managment.html">Staff</a></li>
+        <li><a href="menumanagment.html">Manage Menu</a></li>
+        <li><a href="index.html">Order panel</a></li>
+      </ul>
+    </div>
+  </nav>
   <main>
     <div id="menuList">Loading menu items...</div>
   </main>
+
+  <script>
+    // Toggle mobile nav
+    document.getElementById("navToggle").onclick = () => {
+      document.getElementById("navLinks").classList.toggle("show");
+    };
+
+    // Highlight current page
+    const links = document.querySelectorAll(".nav-links a");
+    links.forEach(link => {
+      if (link.href === window.location.href) {
+        link.classList.add("active");
+      }
+    });
+  </script>
 
   <script type="module">
     import { db } from "./firebase-config.js";
@@ -289,6 +306,7 @@
       });
     });
   </script>
+  
   <footer class="footer">
   <p>
     Developed by 
