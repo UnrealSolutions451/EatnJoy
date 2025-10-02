@@ -124,6 +124,25 @@
     /* logout */
     .logout-container{ position:absolute; right:16px; top:18px; }
     .logout-btn{ background:var(--price); color:#fff; border:none; padding:8px 12px; border-radius:18px; cursor:pointer; font-weight:700; }
+    
+    /* footer */
+  .footer {
+  background: #f9f9f9;
+  color: #000000;
+  text-align: center;
+  padding: 10px 16px;
+  font-size: 0.97rem;
+  font-weight: 450;
+  border-top: 1px solid #ddd;
+}
+.footer a {
+  color: #FF6400;
+  font-weight: 600;
+  text-decoration: none;
+}
+.footer a:hover { text-decoration: underline; }
+
+  
   </style>
 </head>
 <body>
@@ -181,6 +200,7 @@
       <h2 id="active-orders-title" class="section-title">Active Orders</h2>
       <div id="orders" class="orders-grid" aria-live="polite"></div>
     </aside>
+
   </main>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
@@ -536,5 +556,13 @@
     searchCode.addEventListener("keyup", (e) => { if(e.key === "Enter") findOrder(); });
 
   </script>
+  <footer class="footer">
+  <p>
+    Developed by 
+    <a href="https://unrealsolutions.pages.dev" target="_blank" rel="noopener noreferrer">UnrealSolutions</a> 
+    | Contact: <a href="mailto:info.unrealsolutions@gmail.com">info.unrealsolutions@gmail.com</a> | +91-7507374446 | +91-9529102559
+  </p>
+</footer>
+
 </body>
 </html>
