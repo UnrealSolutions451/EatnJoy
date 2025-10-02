@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Staff Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --primary: #000000;
+      --secondary: #46a0fa;
+      --price: #d22c27;
+      --buttons: #46a0fa;
+      --accent: #FFD166;
+      --background: #F7FFF7;
+      --text: #292F36;
+      --card-bg: #FFFFFF;
+      --border-radius: 12px;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+    html,body { height:100%; }
+    body {
+      background: var(--background);
+      color: var(--text);
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background-color: var(--primary);
+      color: white;
+      height: 90px;
+      padding: 10px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 70px;
+    }
+
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 20px;
+      padding: 18px;
+      width: 100%;
+    }
+    @media(max-width: 980px){
+      main { grid-template-columns: 1fr; padding: 12px; }
+    }
+
+    .btn { padding: 10px 16px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: var(--transition); box-shadow: var(--shadow); }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: #FF6400; }
+    .btn-accept { background: #FF6400; color: #fff; }
+    .btn-danger { background: #b3231f; color: #fff; }
+    .btn-toggle { background: #FF6400; color: #fff; width: 60%; }
+    .btn-toggle:hover { background: #303030; }
+    .btn-ghost { background: #fff3f3; color: var(--primary); border: 1px solid #ffd0d0; }
+    .btn-accent { background: var(--accent); color: #4a3b00; }
+
+    h2.section-title { font-size: 2rem; font-weight: 700; margin: 12px 0 16px; text-align: center; color:#1b1b1b; }
+
+    /* Place Order */
+    .place-order { background: var(--card-bg); padding: 16px; border-radius: var(--border-radius); box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 12px; min-height: 220px; }
+    .table-buttons { display:flex; flex-wrap:wrap; gap:10px; }
+    .table-btn { background: #f5f5f5; border: 1px solid #e4e6eb; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+    .table-btn.active { background: var(--primary); color:#fff; border-color: var(--primary); }
+    .menu-search { margin-bottom: 10px; }
+    .menu-search input { width:100%; padding:8px 10px; border-radius:8px; border:1px solid #ccc; }
+
+    .menu-list { display: none; flex-direction: column; gap: 10px; max-height: 320px; overflow-y: auto; border: 1px solid #eee; padding: 10px; border-radius: 10px; }
+    .menu-item { display: flex; justify-content: space-between; align-items: center; background: #fafafa; padding: 10px; border-radius: 10px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.03); gap:12px; }
+    .menu-item label { font-weight: 500; margin-right: 6px; }
+
+    /* Qty control */
+    .qty-control { display:flex; align-items:center; gap:6px; background:#fff; border:1px solid #ddd; padding:4px 6px; border-radius:8px; }
+    .qty-btn { background:#f0f0f0; border:none; width:30px; height:30px; border-radius:6px; cursor:pointer; font-weight:700; }
+    .qty-btn:hover { background:#e6e6e6; }
+    .qty-value { min-width:26px; text-align:center; font-weight:700; display:inline-block; }
+
+    /* Selected items preview */
+    .selected-items { display:flex; flex-direction:column; gap:10px; margin-top:8px; }
+    .selected-card { background:#fff; padding:10px; border-radius:10px; box-shadow:var(--shadow); display:flex; justify-content:space-between; align-items:center; gap:10px; }
+    .remove-btn { background:#ffecec; border:none; color:var(--price); padding:6px 10px; border-radius:8px; cursor:pointer; font-weight:700; }
+
+    /* Active orders side */
+    .right-column { display:flex; flex-direction:column; gap:12px; }
+    .search-row { display:flex; gap:10px; align-items:center; }
+    .search-input { flex:1; padding:10px 12px; border-radius:10px; border:1px solid #e4e6eb; background:#fff; }
+
+    .orders-grid { display:grid; grid-template-columns: repeat(2, 1fr); gap: 16px; align-items:start; }
+    @media(max-width: 720px){ .orders-grid { grid-template-columns: 1fr; } }
+
+    .order-card { background: var(--card-bg); border-radius: var(--border-radius); box-shadow: var(--shadow); padding: 14px; display:flex; flex-direction:column; gap:10px; min-height:120px; }
+    .order-head { display:flex; justify-content:space-between; align-items:center; gap:10px; }
+    .order-id { font-weight:700; color:var(--primary); }
+    .status{ font-size:0.8rem; padding:6px 10px; border-radius:999px; background:#fff3f3; border:1px solid #ffd0d0; color:var(--primary); font-weight:700; }
+    .status.accepted{ background:#fff8e1; color:#8a6d00; border-color:#ffeaa7; }
+    .status.completed{ background:#e1f0ff; color:#005b9f; border-color:#9ed1ff; }
+    .status.paid{ background:#e8f9e8; color:#0f8f0f; border-color:#a8e6a8; }
+
+    .order-body p{ margin:0; font-size:0.95rem; }
+    .order-actions{ display:flex; gap:8px; flex-wrap:wrap; }
+
+    /* dropdown */
+    .dropdown{ position:relative; }
+    .dropdown .dropdown-content{ display:none; position:absolute; top:110%; left:0; background:#fff; box-shadow:var(--shadow); border-radius:8px; min-width:140px; overflow:hidden; z-index:50; }
+    .dropdown.show .dropdown-content{ display:block; }
+    .dropdown .dropdown-content button{ display:block; width:100%; padding:10px; border:none; text-align:left; background:#fff; cursor:pointer; }
+    .dropdown .dropdown-content button:hover{ background:#f4f4f4; }
+
+    /* toast */
+    .toast{ position:fixed; bottom:18px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.85); color:#fff; padding:10px 16px; border-radius:16px; opacity:0; transition:opacity .25s; z-index:1000;}
+    .toast.show{ opacity:1; }
+
+    /* logout */
+    .logout-container{ position:absolute; right:16px; top:18px; }
+    .logout-btn{ background:var(--price); color:#fff; border:none; padding:8px 12px; border-radius:18px; cursor:pointer; font-weight:700; }
+  </style>
+</head>
+<body>
+  <!-- protect page -->
+  <script type="module" src="auth-guard.js"></script>
+
+  <header>
+    <h1>Eat-N-Joy Staff Panel</h1>
+    <div class="logout-container">
+      <button id="logoutBtn" class="logout-btn">Logout</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- LEFT: Place Order -->
+    <section class="place-order" aria-labelledby="place-order-title">
+      <h2 id="place-order-title" class="section-title">Place Order</h2>
+
+      <!-- Table Buttons -->
+      <div class="table-buttons" id="tableButtons" aria-label="Table selection"></div>
+
+      <div style="display:flex; gap:10px;">
+        <button id="toggleMenu" class="btn btn-toggle">🧾 Add Items</button>
+        <button id="clearSelection" class="btn btn-ghost">Clear</button>
+      </div>
+      <div class="menu-search" id="menuSearchContainer" style="display:none;">
+        <input type="text" id="menuSearch" placeholder="Search items..." />
+      </div>
+
+
+      <div class="menu-list" id="menuList" aria-live="polite"></div>
+
+      <!-- Selected items preview -->
+      <div>
+        <h3 style="margin:6px 0 8px; font-size:1rem;">Selected Items</h3>
+        <div id="selectedItems" class="selected-items"></div>
+      </div>
+
+      <div style="display:flex; gap:10px; margin-top:8px;">
+        <button id="placeOrderBtn" class="btn btn-danger" style="flex:1;">✅ Place Order</button>
+        <div style="min-width:160px; align-self:center; text-align:right; color:#b3231f; font-weight:700;">
+          <div>Total:</div>
+          <div id="runningTotal">₹0</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT: Active Orders -->
+    <aside class="right-column" aria-labelledby="active-orders-title">
+      <div class="search-row">
+        <input id="searchCode" class="search-input" placeholder="Search order code (e.g. ORD-1234)" />
+        <button id="findBtn" class="btn btn-primary">Find</button>
+      </div>
+
+      <h2 id="active-orders-title" class="section-title">Active Orders</h2>
+      <div id="orders" class="orders-grid" aria-live="polite"></div>
+    </aside>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script type="module">
+    import { auth, db } from "./firebase-config.js";
+    import { signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+    import {
+      collection, query, onSnapshot, getDocs, addDoc, doc, getDoc, updateDoc, deleteDoc, serverTimestamp, where
+    } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+    // Logout
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      try {
+        await signOut(auth);
+        window.location.href = "login.html";
+      } catch (e) {
+        console.error(e);
+      }
+    });
+
+    const menuList = document.getElementById("menuList");
+    const selectedItemsDiv = document.getElementById("selectedItems");
+    const toast = document.getElementById("toast");
+    const tableButtonsDiv = document.getElementById("tableButtons");
+    const runningTotalEl = document.getElementById("runningTotal");
+    const ordersDiv = document.getElementById("orders");
+    const toggleMenuBtn = document.getElementById("toggleMenu");
+    const clearSelectionBtn = document.getElementById("clearSelection");
+    const placeOrderBtn = document.getElementById("placeOrderBtn");
+    const findBtn = document.getElementById("findBtn");
+    const searchCode = document.getElementById("searchCode");
+    const menuSearchContainer = document.getElementById("menuSearchContainer");
+    const menuSearchInput = document.getElementById("menuSearch");
+
+
+
+    let selectedTable = null;
+    let menuItemsLoaded = [];
+
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add("show");
+      setTimeout(()=> toast.classList.remove("show"), 1400);
+    }
+
+    // Generate table buttons (adjust count as needed)
+    const totalTables = 6;
+    for(let i=1;i<=totalTables;i++){
+      const b = document.createElement("button");
+      b.className = "table-btn";
+      b.textContent = "Table " + i;
+      b.addEventListener("click", ()=> {
+        document.querySelectorAll(".table-btn").forEach(x=>x.classList.remove("active"));
+        b.classList.add("active");
+        selectedTable = i;
+      });
+      tableButtonsDiv.appendChild(b);
+    }
+        // Toggle menu
+    toggleMenuBtn.addEventListener("click", () => {
+      const visible = menuList.style.display === "flex";
+      menuList.style.display = visible ? "none" : "flex";
+      menuSearchContainer.style.display = visible ? "none" : "block";
+    });
+    clearSelectionBtn.addEventListener("click", resetSelectionUI);
+
+    // Menu search
+    menuSearchInput.addEventListener("input", () => {
+      const term = menuSearchInput.value.toLowerCase();
+      menuList.querySelectorAll(".menu-item").forEach(item => {
+        const name = item.querySelector("input").dataset.name.toLowerCase();
+        item.style.display = name.includes(term) ? "flex" : "none";
+      });
+    });
+
+    // Load menu items from Firestore
+    async function loadMenu(){
+      menuList.innerHTML = "";
+      menuItemsLoaded = [];
+      const q = query(collection(db, "menu"), where("available", "==", true));
+      const snap = await getDocs(q);
+      snap.forEach(docSnap=>{
+        const data = docSnap.data();
+        const id = docSnap.id;
+        const row = document.createElement("div");
+        row.className = "menu-item";
+        row.innerHTML = `
+          <label style="flex:1"><input type="checkbox" data-id="${id}" data-name="${escapeHtml(data.name)}" data-price="${Number(data.price||0)}"> ${escapeHtml(data.name)} (₹${Number(data.price||0)})</label>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div class="qty-control" aria-hidden="false">
+              <button class="qty-btn dec" type="button">−</button>
+              <span class="qty-value">1</span>
+              <button class="qty-btn inc" type="button">+</button>
+            </div>
+          </div>
+        `;
+        // attach behavior
+        const cb = row.querySelector("input[type=checkbox]");
+        const dec = row.querySelector(".dec");
+        const inc = row.querySelector(".inc");
+        const qtyVal = row.querySelector(".qty-value");
+
+        dec.addEventListener("click", () => {
+          let v = Math.max(1, parseInt(qtyVal.textContent || "1") - 1);
+          qtyVal.textContent = v;
+          updateSelectedPreview();
+        });
+        inc.addEventListener("click", () => {
+          let v = parseInt(qtyVal.textContent || "1") + 1;
+          qtyVal.textContent = v;
+          updateSelectedPreview();
+        });
+        cb.addEventListener("change", () => updateSelectedPreview());
+
+        menuList.appendChild(row);
+
+        menuItemsLoaded.push({
+          id, name: data.name, price: Number(data.price||0)
+        });
+      });
+    }
+    // escape small HTML to avoid injection in innerHTML usage
+    function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    // Update selected preview cards & running total
+    function updateSelectedPreview(){
+      selectedItemsDiv.innerHTML = "";
+      let total = 0;
+      const checked = menuList.querySelectorAll("input[type=checkbox]:checked");
+      checked.forEach(cb=>{
+        const id = cb.dataset.id;
+        const name = cb.dataset.name;
+        const price = Number(cb.dataset.price || 0);
+        const qty = Number(cb.closest(".menu-item").querySelector(".qty-value").textContent || 1);
+        total += price * qty;
+
+        const card = document.createElement("div");
+        card.className = "selected-card";
+        card.innerHTML = `<div style="display:flex;flex-direction:column;gap:4px;"><span>${name} × ${qty}</span><small style="color:#666">₹${price} each</small></div><div style="display:flex;gap:8px;align-items:center;"><strong>₹${price*qty}</strong><button class="remove-btn" aria-label="remove item">Remove</button></div>`;
+
+        card.querySelector(".remove-btn").addEventListener("click", () => {
+          cb.checked = false;
+          // reset qty to 1 for that item
+          cb.closest(".menu-item").querySelector(".qty-value").textContent = "1";
+          updateSelectedPreview();
+        });
+
+        selectedItemsDiv.appendChild(card);
+      });
+      runningTotalEl.textContent = `₹${total}`;
+    }
+
+    function resetSelectionUI(){
+      // clear table
+      selectedTable = null;
+      document.querySelectorAll(".table-btn").forEach(b=>b.classList.remove("active"));
+      // hide menu
+      menuList.style.display = "none";
+      // clear selections
+      menuList.querySelectorAll("input[type=checkbox]").forEach(cb => cb.checked = false);
+      menuList.querySelectorAll(".qty-value").forEach(q => q.textContent = "1");
+      selectedItemsDiv.innerHTML = "";
+      runningTotalEl.textContent = "₹0";
+    }
+
+    // Place order
+    placeOrderBtn.addEventListener("click", async () => {
+      if (!selectedTable) { alert("Please select a table"); return; }
+      const checked = Array.from(menuList.querySelectorAll("input[type=checkbox]:checked"));
+      if (!checked.length) { alert("Select at least one item"); return; }
+      const items = checked.map(cb => {
+        const qty = Number(cb.closest(".menu-item").querySelector(".qty-value").textContent || 1);
+        return { id: cb.dataset.id, name: cb.dataset.name, price: Number(cb.dataset.price || 0), quantity: qty };
+      });
+      const total = items.reduce((s,i) => s + (i.price * i.quantity), 0);
+      const orderCode = "ORD-" + String(Math.floor(Math.random()*9000)+1000);
+      await addDoc(collection(db, "orders"), {
+        table: selectedTable,
+        orderCode,
+        items,
+        totalAmount: total,
+        status: "pending",
+        paymentStatus: "unpaid",
+        createdAt: serverTimestamp()
+      });
+      showToast("Order placed");
+      // reset UI
+      resetSelectionUI();
+    });
+
+    // Active orders: real-time
+    const activeOrdersQuery = query(collection(db, "orders"));
+    onSnapshot(activeOrdersQuery, (snap) => {
+      const list = [];
+      snap.forEach(docSnap=>{
+        const data = docSnap.data();
+        data.id = docSnap.id;
+        // only show active: not completed+paid
+        if (!(data.status === "completed" && data.paymentStatus === "paid")) list.push(data);
+      });
+      // sort most recent first (createdAt)
+      list.sort((a,b)=> (b.createdAt?.toMillis?.() || 0) - (a.createdAt?.toMillis?.() || 0));
+      renderOrders(list);
+    });
+
+    function renderOrders(orders){
+      ordersDiv.innerHTML = "";
+      if (!orders.length) {
+        ordersDiv.innerHTML = `<div class="order-card"><p style="color:#666">No active orders right now.</p></div>`;
+        return;
+      }
+      orders.forEach(order=>{
+        const itemsText = (order.items || []).map(it => `${it.name} x ${it.quantity}`).join(", ");
+        const total = order.totalAmount || (order.items || []).reduce((s,i)=>s+(i.price*(i.quantity||1)),0);
+        let statusClass = "status", label = order.status || "-";
+        if (order.paymentStatus === "paid") { statusClass = "status paid"; label = "Bill Paid"; }
+        else if (order.status === "pending") { statusClass = "status"; label = "Pending"; }
+        else if (order.status === "accepted") { statusClass = "status accepted"; label = "Accepted"; }
+        else if (order.status === "completed") { statusClass = "status completed"; label = "✅ Completed, waiting for payment"; }
+
+        const card = document.createElement("div");
+        card.className = "order-card";
+        card.innerHTML = `
+          <div class="order-head">
+            <div>
+              <div class="order-id">Table ${order.table || "-"}</div>
+              <div style="font-size:.9rem;color:#666">Code: ${order.orderCode || "-"}</div>
+            </div>
+            <div><span class="${statusClass}">${label}</span></div>
+          </div>
+
+          <div class="order-body">
+            <p><strong>Items:</strong> ${itemsText || "-"}</p>
+            <p><strong>Total:</strong> ₹${total}</p>
+            <p style="font-size:0.85rem;color:#666;margin-top:6px;">
+              <strong>Date:</strong> ${order.date || (order.createdAt ? new Date(order.createdAt.toMillis()).toLocaleString() : "N/A")}
+            </p>
+          </div>
+
+          <div class="order-actions">
+            ${order.status === "pending" ? `<button class="btn btn-accept" onclick="updateStatus('${order.id}','accepted')">Accept</button>` : ""}
+            ${order.status === "accepted" ? `<button class="btn btn-ghost" onclick="updateStatus('${order.id}','completed')">Complete</button>` : ""}
+            ${order.paymentStatus !== "paid" ? `
+              <div class="dropdown" id="dropdown-${order.id}">
+                <button class="btn btn-primary" onclick="toggleDropdown('${order.id}')">Bill</button>
+                <div class="dropdown-content">
+                  <button onclick="markPaid('${order.id}','online')">Online</button>
+                  <button onclick="markPaid('${order.id}','cash')">Cash</button>
+                </div>
+              </div>` : ""}
+            <button class="btn btn-danger" onclick="deleteOrder('${order.id}')">Delete</button>
+          </div>
+        `;
+        ordersDiv.appendChild(card);
+      });
+    }
+
+    // find order by code
+    window.findOrder = async function(){
+      const code = searchCode.value.trim();
+      if(!code){ alert("Enter an order code"); return; }
+      const q = query(collection(db,"orders"), where("orderCode","==", code));
+      const snap = await getDocs(q);
+      const list = [];
+      snap.forEach(d => { const o = d.data(); o.id = d.id; list.push(o); });
+      list.sort((a,b)=> (b.createdAt?.toMillis?.() || 0) - (a.createdAt?.toMillis?.() || 0));
+      renderOrders(list);
+    };
+    findBtn.addEventListener("click", findOrder);
+
+    // toggle dropdown
+    window.toggleDropdown = function(id){
+      const el = document.getElementById(`dropdown-${id}`);
+      if(!el) return;
+      el.classList.toggle("show");
+    };
+
+    // mark paid (online / cash)
+    window.markPaid = async function(id, method){
+      try {
+        await updateDoc(doc(db,"orders",id), { paymentStatus: "paid", paymentMethod: method, paidAt: serverTimestamp() });
+        showToast(`Bill marked paid (${method})`);
+        const el = document.getElementById(`dropdown-${id}`);
+        if(el) el.classList.remove("show");
+      } catch (e) {
+        console.error(e); showToast("Failed to mark paid");
+      }
+    };
+
+    // update status (accept / complete)
+    window.updateStatus = async function(id, status){
+      try {
+        // fetch order data (before update) to reduce inventory when completed
+        const ref = doc(db, "orders", id);
+        const snap = await getDoc(ref);
+        const orderData = snap.exists() ? snap.data() : null;
+
+        await updateDoc(ref, { status, timestamp: serverTimestamp() });
+        showToast(`Order marked ${status}`);
+
+        if(status === "completed" && orderData){
+          // reduce inventory
+          reduceInventory(orderData).catch(err => console.error("reduceInventory err", err));
+        }
+      } catch (e) {
+        console.error(e); showToast("Failed to update status");
+      }
+    };
+
+    // delete
+    window.deleteOrder = async function(id){
+      if(!confirm("Delete order?")) return;
+      try {
+        await deleteDoc(doc(db,"orders",id));
+        showToast("Order deleted");
+      } catch (e) { console.error(e); showToast("Delete failed"); }
+    };
+
+    // reduce inventory helper (reads recipe subcollection and decrements inventory)
+    async function reduceInventory(order){
+      try {
+        if(!order || !Array.isArray(order.items)) return;
+        for(const it of order.items){
+          const recipeSnap = await getDocs(collection(db, "menu", it.id, "recipe"));
+          if(recipeSnap.empty) continue;
+          const qtyOrdered = Number(it.quantity || 1);
+          for(const r of recipeSnap.docs){
+            const ingredientKey = r.id;
+            const ingData = r.data();
+            const qtyNeededRaw = Object.values(ingData)[0];
+            const qtyNeeded = Number(qtyNeededRaw) || 0;
+            const invRef = doc(db, "inventory", ingredientKey);
+            const invSnap = await getDoc(invRef);
+            if(!invSnap.exists()) continue;
+            const invData = invSnap.data();
+            const currentStock = Number(invData.stock || 0);
+            const newStock = Math.max(0, currentStock - qtyNeeded * qtyOrdered);
+            await updateDoc(invRef, { stock: newStock });
+          }
+        }
+        showToast("Inventory updated");
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    // initial load
+    await loadMenu();
+    resetSelectionUI();
+
+    // small helper to allow pressing Enter in search to trigger find
+    searchCode.addEventListener("keyup", (e) => { if(e.key === "Enter") findOrder(); });
+
+  </script>
+</body>
+</html>

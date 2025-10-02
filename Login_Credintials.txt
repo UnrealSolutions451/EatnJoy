@@ -1,0 +1,7 @@
+Admin:
+email: admin@eatnjoy.com
+Pw : pass123
+
+Staff: 
+email: staff@eatnjoy.com
+Pw: pass123 

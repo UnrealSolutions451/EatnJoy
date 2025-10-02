@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Order Confirmation</title>
+  <style>
+    body {
+      
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #03045e, #46a0fa);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .note {
+      
+      margin-top: -50px;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 18px 24px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      text-align: center;
+      max-width: 700px;
+      font-size: 30px;
+      line-height: 1.5;
+      color: #222;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+    .card {
+      margin-top: 30px;
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      text-align: center;
+      min-height: 250px;
+      width: 85%;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+    h1 {
+      color: #28a745;
+      margin-bottom: 15px;
+      font-size: 40px;
+    }
+    p {
+      font-size: 28px;
+      margin: 8px 0;
+    }
+    .order-code {
+      font-size: 40px;
+      font-weight: bold;
+      color: #007bff;
+      margin: 12px 0;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <!-- 🔹 Friendly customer note -->
+  <div class="note">
+    📌 Please wait while we prepare your food.  
+    Once it’s ready, your order code will be displayed on the <strong>Pickup Screen</strong> at the counter.
+  </div>
+
+  <!-- 🔹 Order Confirmation Card -->
+  <div class="card">
+    <h1>✅ Order Placed!</h1>
+    <p>Thank you for your order.</p>
+    <p class="order-code" id="orderCode">Loading...</p>
+  </div>
+  
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const orderCode = params.get("code") || "N/A";
+    document.getElementById("orderCode").textContent = "Order Code: " + orderCode;
+  </script>
+</body>
+</html>
