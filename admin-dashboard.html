@@ -32,19 +32,47 @@
     }
 
     header {
-      display: flex;
-      justify-content: center;
-      background: var(--primary);
-      color: white;
-      padding: 16px 20px;
-      text-align: center;
-      font-size: 2.5rem;
-      font-weight: 700;
-      
-      top: 0;
-      z-index: 100;
-      box-shadow: var(--shadow);
-    }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--primary);
+  color: white;
+  padding: 16px 20px;
+  text-align: center;
+  font-size: 2.5rem; /* Desktop default */
+  font-weight: 700;
+  position: sticky; /* better than fixed for content flow */
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow);
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+/* Tablet screens */
+@media (max-width: 768px) {
+  header {
+    font-size: 2rem;
+    padding: 14px 16px;
+  }
+}
+
+/* Mobile screens */
+@media (max-width: 480px) {
+  header {
+    font-size: 1.5rem;
+    padding: 12px 14px;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 360px) {
+  header {
+    font-size: 1.2rem;
+    padding: 10px 12px;
+  }
+}
+
 
     main {
       padding: 16px;
@@ -143,25 +171,46 @@
       z-index: 1000;
     }
     #toast.show { opacity: 1; }
+/* Logout button */
+.logout-container {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 100; /* keeps it above other elements */
+}
 
-    .logout-container {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-    }
-    #logoutBtn {
-      background: #d22c27;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: bold;
-      transition: background 0.3s;
-    }
-    #logoutBtn:hover { background: #a71d2a; }
+#logoutBtn {
+  background: #d22c27;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background 0.3s, transform 0.2s;
+  white-space: nowrap; /* prevents wrapping */
+}
 
+#logoutBtn:hover {
+  background: #a71d2a;
+  transform: scale(1.03);
+}
+
+/* Mobile responsive */
+@media (max-width: 480px) {
+  .logout-container {
+    top: 12px;
+    right: 8px;
+  }
+  #logoutBtn {
+    padding: 6px 10px;
+    font-size: 12px;
+    border-radius: 14px;
+  }
+}
+
+/* nav bar */
     .admin-nav {
     background: var(--primary, #03045e);
     color: white;

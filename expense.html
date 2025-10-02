@@ -15,21 +15,55 @@
       --shadow: 0 4px 6px rgba(0,0,0,0.1);
       --transition: all 0.3s ease;
     }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+
     body {
       font-family: 'Segoe UI', sans-serif;
       background: #f4f6f8;
       margin: 0;
       color: #333;
     }
-    header {
-      background: var(--primary);
-      color: white;
-      padding: 16px;
-      text-align: center;
-      font-size: 2.5rem;
-      font-weight: 700;
-      position: relative;
-    }
+        header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--primary);
+  color: white;
+  padding: 16px 20px;
+  text-align: center;
+  font-size: 2.5rem; /* Desktop default */
+  font-weight: 700;
+  position: sticky; /* better than fixed for content flow */
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow);
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+/* Tablet screens */
+@media (max-width: 768px) {
+  header {
+    font-size: 2rem;
+    padding: 14px 16px;
+  }
+}
+
+/* Mobile screens */
+@media (max-width: 480px) {
+  header {
+    font-size: 1.5rem;
+    padding: 12px 14px;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 360px) {
+  header {
+    font-size: 1.2rem;
+    padding: 10px 12px;
+  }
+}
     main { padding: 20px; max-width: 1000px; margin: auto; }
 
     .form-box, .stats, .list {
@@ -78,32 +112,50 @@
     th, td { padding: 10px; border-bottom: 1px solid #eee; text-align: left; }
     th { background: #f0f0f0; }
 
-    .logout-container {
-      position: absolute;
-      top: 15px;
-      right: 20px;
-    }
+.logout-container {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 100; /* keeps it above other elements */
+}
 
-    #logoutBtn {
-      background: #d22c27;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: bold;
-      transition: background 0.3s;
-    }
-    #logoutBtn:hover {
-      background: #a71d2a;
-    }
+#logoutBtn {
+  background: #d22c27;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background 0.3s, transform 0.2s;
+  white-space: nowrap; /* prevents wrapping */
+}
 
-    .admin-nav {
+#logoutBtn:hover {
+  background: #a71d2a;
+  transform: scale(1.03);
+}
+
+/* Mobile responsive */
+@media (max-width: 480px) {
+  .logout-container {
+    top: 12px;
+    right: 8px;
+  }
+  #logoutBtn {
+    padding: 6px 10px;
+    font-size: 12px;
+    border-radius: 14px;
+  }
+}
+
+
+   .admin-nav {
     background: var(--primary, #03045e);
     color: white;
     box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-    position: sticky;
+    
     top: 0;
     z-index: 100;
   }
@@ -142,31 +194,31 @@
   }
   /* Mobile */
   .nav-toggle {
-    display: none;
-    font-size: 1.4rem;
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
-  }
-  @media (max-width: 768px) {
-    .nav-links {
-      position: absolute;
-      top: 56px;
-      right: 0;
-      background: var(--primary, #03045e);
-      flex-direction: column;
-      width: 200px;
-      padding: 10px;
       display: none;
+      font-size: 1.4rem;
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
     }
-    .nav-links.show {
-      display: flex;
+    @media (max-width: 768px) {
+      .nav-links {
+        position: absolute;
+        top: 56px;
+        right: 0;
+        background: var(--primary, #03045e);
+        flex-direction: column;
+        width: 200px;
+        padding: 10px;
+        display: none;
+      }
+      .nav-links.show {
+        display: flex;
+      }
+      .nav-toggle {
+        display: block;
+      }
     }
-    .nav-toggle {
-      display: block;
-    }
-  }
     /* footer */
   .footer {
   background: #f9f9f9;
@@ -189,8 +241,7 @@
 
 <body>
   <script type="module" src="auth-guard.js"></script>
-  <header>
-    Expense Manager
+  <header>Expense Manager
     <div class="logout-container">
       <button id="logoutBtn">Logout</button>
     </div>
@@ -198,7 +249,6 @@
   <nav class="admin-nav">
   <div class="nav-container">
     <div class="nav-logo">Eat-N-Joy Cafe</div>
-
     <button class="nav-toggle" id="navToggle">☰</button>
 
     <ul class="nav-links" id="navLinks">
